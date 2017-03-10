@@ -1,2 +1,73 @@
-<html>
+<!doctype html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <title>Oh Boy!</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+    <div class="content">
+
+
+        <div ng-controller="FavoritesListController" class="favorites">
+            <span ng-if="favoriteCount() > 0">
+                <h2>Favorites</h2>
+                <ul>
+                    <li ng-repeat="gem in data.store">
+                        <h3>{{gem.name}}</h3>
+                        <a ng-click="remove(gem)">remove</a>
+                        <a ng-if="gem.project_uri" href="{{gem.project_uri}}" target="_blank">view project</a>
+                        <a ng-if="gem.documentation_uri" href="{{gem.documentation_uri}}" target="_blank">view docs</a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+
+
+        <div ng-controller="GemSearchController">
+            <h2>Enter Search</h2>
+            <label for="search-input">Do be so kind as to enter your gem's name:</label>
+            <input ng-keyup="updateSearch($event)" ng-model="gemName" ng-trim="true" id="search-input"></input>
+        </div>
+
+
+        <div ng-controller="GemListController" class="dependecies-list">
+            <span ng-if="data.gems.length">
+                <h2>Results</h2>
+                <ul>
+                    <li ng-repeat="gem in data.gems">
+                        <h3>{{gem.name}}</h3>
+                        <a ng-if="!favoriteData.store[gem.name]" ng-click="addFavorite(gem)">add favorite</a>
+                        <a ng-if="favoriteData.store[gem.name]" ng-click="removeFavorite(gem)">remove favorite</a>
+                        <a ng-if="gem.project_uri" href="{{gem.project_uri}}" target="_blank">view project</a>
+                        <a ng-if="gem.documentation_uri" href="{{gem.documentation_uri}}" target="_blank">view docs</a>
+                        <span ng-if="gem.dependencies.development.length || gem.dependencies.runtime.length">
+                            <span ng-click="showDependencies.toggle(gem.name)" init="showDependencies.registry[gem.name] = false">
+                                <a ng-if="!showDependencies.registry[gem.name]">show dependencies</a>
+                                <a ng-if="showDependencies.registry[gem.name]">hide dependencies</a>
+                            </span>
+                            <span ng-if="showDependencies.registry[gem.name] === true && gem.dependencies.development.length">
+                                <h4>Development Dependencies</h4>
+                                <ul>
+                                    <li ng-repeat="dependency in gem.dependencies.development">
+                                        {{dependency.name}}: {{dependency.requirements}}
+                                    </li>
+                                </ul>
+                            </span>
+                            <span ng-if="showDependencies.registry[gem.name] === true && gem.dependencies.runtime.length">
+                                <h4>Runtime Dependencies</h4>
+                                <ul>
+                                    <li ng-repeat="dependency in gem.dependencies.runtime">
+                                        {{dependency.name}}: Requirements: {{dependency.requirements}}
+                                    </li>
+                                </ul>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </span>
+        </div>
+
+    </div>
+</body>
 </html>
